@@ -5,7 +5,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         <h1>Shams</h1>
-        <p>Welcome to my CI/CD Pipeline assignment.</p>
+        <p>Welcome to my CI/CD Pipeline assignment for Enterprise Computing.</p>
       </header>
     </div>
   );
