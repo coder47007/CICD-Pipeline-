@@ -20,8 +20,8 @@ pipeline {
         stage('Test') {
             steps {
                 dir('shams-app') {
-                    // Explicitly pass --watchAll=false to prevent Jest from waiting or failing if CI isn't perfectly set
-                    bat 'npm test -- --watchAll=false'
+                    // Explicitly pass the file to bypass Jest ignoring tests in `.jenkins` paths
+                    bat 'npm test -- src/App.test.js --watchAll=false'
                 }
             }
         }
