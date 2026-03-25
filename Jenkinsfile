@@ -20,7 +20,8 @@ pipeline {
         stage('Test') {
             steps {
                 dir('shams-app') {
-                    bat 'npm test'
+                    // Explicitly pass --watchAll=false to prevent Jest from waiting or failing if CI isn't perfectly set
+                    bat 'npm test -- --watchAll=false'
                 }
             }
         }
