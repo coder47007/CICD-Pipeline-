@@ -1,37 +1,35 @@
 pipeline {
-    agent any
+        agent any
 
-    environment {
-        CI = 'true'
-        // These will be loaded from Jenkins credentials that you need to set up in Step 11
-        NETLIFY_AUTH_TOKEN = credentials('netlify-token')
-        NETLIFY_SITE_ID = credentials('netlify-site-id')
-    }
+        environment {
+                    CI = 'true'
+                    NETLIFY_AUTH_TOKEN = credentials('netlify-token')
+                    NETLIFY_SITE_ID = credentials('netlify-site-id')
+        }
 
-    stages {
-        stage('Build') {
-            steps {
-                dir('shams-app') {
-                    bat 'npm install'
-                    bat 'npm run build'
-                }
-            }
+        stages {
+                    stage('Build') {
+                                    steps {
+                                                        dir('shams-app') {
+                                                                                bat 'npm install'
+                                                                                bat 'npm run build'
+                                                        }
+                                    }
+                    }
+                    stage('Test') {
+                                    steps {
+                                                        dir('shams-app') {
+                                                                                // Override default ignore patterns to ensure files in .jenkins folder are found
+                                                                                bat 'npm test -- --watchAll=false --testPathIgnorePatterns "^$"'
+                                                        }
+                                    }
+                    }
+                    stage('Deploy') {
+                                    steps {
+                                                        dir('shams-app') {
+                                                                                bat 'npx netlify-cli deploy --dir=build --prod'
+                                                        }
+                                    }
+                    }
         }
-        stage('Test') {
-            steps {
-                dir('shams-app') {
-                    // Explicitly pass the file to bypass Jest ignoring tests in `.jenkins` paths
-                    bat 'npm test -- src/App.test.js --watchAll=false'
-                }
-            }
-        }
-        stage('Deploy') {
-            steps {
-                dir('shams-app') {
-                    // netlify-cli automatically uses NETLIFY_AUTH_TOKEN and NETLIFY_SITE_ID env variables
-                    bat 'npx netlify-cli deploy --dir=build --prod'
-                }
-            }
-        }
-    }
 }
